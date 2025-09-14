@@ -13,12 +13,15 @@ public class CavbotsPoseEstimator {
     private SwerveDrivePoseEstimator estimator;
 
     CavbotsPhotonCamera[] localizationCameras = {
-        new CavbotsPhotonCamera(CameraConstants.LOCALIZATION_CAM_ONE_NAME, CameraConstants.LOCALIZATION_CAM_ONE_OFFSET),
-        new CavbotsPhotonCamera(CameraConstants.LOCALIZATION_CAM_TWO_NAME, CameraConstants.LOCALIZATION_CAM_TWO_OFFSET)
+            new CavbotsPhotonCamera(CameraConstants.LOCALIZATION_CAM_ONE_NAME,
+                    CameraConstants.LOCALIZATION_CAM_ONE_OFFSET),
+            new CavbotsPhotonCamera(CameraConstants.LOCALIZATION_CAM_TWO_NAME,
+                    CameraConstants.LOCALIZATION_CAM_TWO_OFFSET)
     };
 
     public CavbotsPoseEstimator(DriveSubsystem driveSubsystem, Pose2d initialPose2d) {
-        estimator = new SwerveDrivePoseEstimator(DriveSubsystemConstants.M_KINEMATICS, driveSubsystem.getAngle(), driveSubsystem.getModulePositions(), initialPose2d);
+        estimator = new SwerveDrivePoseEstimator(DriveSubsystemConstants.M_KINEMATICS, driveSubsystem.getAngle(),
+                driveSubsystem.getModulePositions(), initialPose2d);
     }
 
     public Pose2d getPose2d() {
@@ -27,7 +30,8 @@ public class CavbotsPoseEstimator {
 
     private void tryVisionUpdateWithCamera(CavbotsPhotonCamera c) {
         PoseTimestampPair poseTimestampPair = c.fetchPose();
-        if(poseTimestampPair != null) {
+        c.postAprilTagInfoToSmartDashboard();
+        if (poseTimestampPair != null) {
             estimator.addVisionMeasurement(poseTimestampPair.pose, poseTimestampPair.latency);
         } else {
             // System.out.println("Failed to update with a camera");
@@ -35,7 +39,7 @@ public class CavbotsPoseEstimator {
     }
 
     public void updateWithAllAvailableVisionMeasurements() {
-        for(CavbotsPhotonCamera c: localizationCameras) {
+        for (CavbotsPhotonCamera c : localizationCameras) {
             tryVisionUpdateWithCamera(c);
         }
     }

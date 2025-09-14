@@ -28,10 +28,18 @@ public class DriveSubsystem extends SubsystemBase {
   Field2d field = new Field2d();
 
   public DriveSubsystem() {
-    fleft = new NeoKrakenModule(DriveSubsystemConstants.FLEFT_DRIVE_ID, DriveSubsystemConstants.FLEFT_STEER_ID, DriveSubsystemConstants.FLEFT_CANCODER, DriveSubsystemConstants.FLEFT_OFFSET, DriveSubsystemConstants.CANIVORE_NAME);
-    fright = new NeoKrakenModule(DriveSubsystemConstants.FRIGHT_DRIVE_ID, DriveSubsystemConstants.FRIGHT_STEER_ID, DriveSubsystemConstants.FRIGHT_CANCODER, DriveSubsystemConstants.FRIGHT_OFFSET, DriveSubsystemConstants.CANIVORE_NAME);
-    bleft = new NeoKrakenModule(DriveSubsystemConstants.BLEFT_DRIVE_ID, DriveSubsystemConstants.BLEFT_STEER_ID, DriveSubsystemConstants.BLEFT_CANCODER, DriveSubsystemConstants.BLEFT_OFFSET, DriveSubsystemConstants.CANIVORE_NAME);
-    bright = new NeoKrakenModule(DriveSubsystemConstants.BRIGHT_DRIVE_ID, DriveSubsystemConstants.BRIGHT_STEER_ID, DriveSubsystemConstants.BRIGHT_CANCODER, DriveSubsystemConstants.BRIGHT_OFFSET, DriveSubsystemConstants.CANIVORE_NAME);
+    fleft = new NeoKrakenModule(DriveSubsystemConstants.FLEFT_DRIVE_ID, DriveSubsystemConstants.FLEFT_STEER_ID,
+        DriveSubsystemConstants.FLEFT_CANCODER, DriveSubsystemConstants.FLEFT_OFFSET,
+        DriveSubsystemConstants.CANIVORE_NAME);
+    fright = new NeoKrakenModule(DriveSubsystemConstants.FRIGHT_DRIVE_ID, DriveSubsystemConstants.FRIGHT_STEER_ID,
+        DriveSubsystemConstants.FRIGHT_CANCODER, DriveSubsystemConstants.FRIGHT_OFFSET,
+        DriveSubsystemConstants.CANIVORE_NAME);
+    bleft = new NeoKrakenModule(DriveSubsystemConstants.BLEFT_DRIVE_ID, DriveSubsystemConstants.BLEFT_STEER_ID,
+        DriveSubsystemConstants.BLEFT_CANCODER, DriveSubsystemConstants.BLEFT_OFFSET,
+        DriveSubsystemConstants.CANIVORE_NAME);
+    bright = new NeoKrakenModule(DriveSubsystemConstants.BRIGHT_DRIVE_ID, DriveSubsystemConstants.BRIGHT_STEER_ID,
+        DriveSubsystemConstants.BRIGHT_CANCODER, DriveSubsystemConstants.BRIGHT_OFFSET,
+        DriveSubsystemConstants.CANIVORE_NAME);
 
     poseEstimator = new CavbotsPoseEstimator(this, new Pose2d(9.506, 4.067, Rotation2d.fromDegrees(0)));
   }
@@ -66,19 +74,19 @@ public class DriveSubsystem extends SubsystemBase {
 
   public SwerveModulePosition[] getModulePositions() {
     return new SwerveModulePosition[] {
-      fleft.getSwerveModulePosition(),
-      fright.getSwerveModulePosition(),
-      bleft.getSwerveModulePosition(),
-      bright.getSwerveModulePosition()
+        fleft.getSwerveModulePosition(),
+        fright.getSwerveModulePosition(),
+        bleft.getSwerveModulePosition(),
+        bright.getSwerveModulePosition()
     };
   }
 
   public SwerveModuleState[] getSwerveModuleStates() {
     return new SwerveModuleState[] {
-      fleft.getSwerveModuleState(),
-      fright.getSwerveModuleState(),
-      bleft.getSwerveModuleState(),
-      bright.getSwerveModuleState()
+        fleft.getSwerveModuleState(),
+        fright.getSwerveModuleState(),
+        bleft.getSwerveModuleState(),
+        bright.getSwerveModuleState()
     };
   }
 
@@ -107,6 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     poseEstimator.updateWithVisionAndOdometry(getAngle(), getModulePositions());
     field.setRobotPose(poseEstimator.getPose2d());
+
     SmartDashboard.putData("field", field);
   }
 }

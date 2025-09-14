@@ -16,20 +16,22 @@ import org.photonvision.targeting.TargetCorner;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CameraConstants;
 
 public class CavbotsPhotonCamera {
     PhotonCamera camera;
     PhotonPoseEstimator estimator;
 
-    // Transform3d cameraInBotSpace = new Transform3d(new Translation3d(0.3048, 0.08255, 0.08), new Rotation3d(0, Math.toRadians(5), 0.0));
+    // Transform3d cameraInBotSpace = new Transform3d(new Translation3d(0.3048,
+    // 0.08255, 0.08), new Rotation3d(0, Math.toRadians(5), 0.0));
     AprilTagFieldLayout fieldLayout;
 
     public CavbotsPhotonCamera(String camName, Transform3d cameraInBotSpace) {
         try {
             fieldLayout = new AprilTagFieldLayout(CameraConstants.PATH_TO_APRILTAGLAYOUT);
             System.out.println("SUCCESSFULLY LOADED EDITED JSON");
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("ERROR: UNABLE TO LOAD EDITED JSON, DEFAULTING TO BUILT-IN JSON FILE");
             System.out.println(e.getMessage());
             fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
@@ -41,8 +43,8 @@ public class CavbotsPhotonCamera {
 
     private PhotonPipelineResult getLatestResult() {
         // var results = camera.getAllUnreadResults();
-        // if(results.isEmpty()) {
-        //     return new PhotonPipelineResult();
+        // if (results.isEmpty()) {
+        // return new PhotonPipelineResult();
         // }
         // return results.get(0);
         return camera.getLatestResult();
@@ -53,25 +55,27 @@ public class CavbotsPhotonCamera {
         return estimator.update(latest);
     }
 
-    public PoseTimestampPair fetchPose() {  //returns null if there is no new pose
+    public PoseTimestampPair fetchPose() { // returns null if there is no new pose
         EstimatedRobotPose ret = null;
         try {
             ret = getCameraEstimatedPose3d().get();
-        } catch (NoSuchElementException e) {}
-        if(ret != null && getNumTargets() >= 1) {
+        } catch (NoSuchElementException e) {
+        }
+        if (ret != null && getNumTargets() >= 1) {
             return new PoseTimestampPair(ret.estimatedPose.toPose2d(), ret.timestampSeconds);
         }
         return null;
     }
 
-    private double averageCorners(List<TargetCorner> l) { //gets the middle of a tag so the robot can point at it (assuming the camera is centered)
+    private double averageCorners(List<TargetCorner> l) { // gets the middle of a tag so the robot can point at it
+                                                          // (assuming the camera is centered)
         double divisor = 0.0;
         double xSum = 0.0;
-        for(TargetCorner t: l) {
+        for (TargetCorner t : l) {
             xSum += t.x;
             divisor += 1.0;
         }
-        if(divisor == 0.0) {
+        if (divisor == 0.0) {
             return -1.0;
         }
         return divisor / xSum;
@@ -79,14 +83,15 @@ public class CavbotsPhotonCamera {
 
     public double getTargetTagX(int tagID) {
         var result = getLatestResult();
-        if(!result.hasTargets()) {
+        if (!result.hasTargets()) {
             System.out.println("NO TARGETS");
             return -1.0;
         }
-        
+
         List<PhotonTrackedTarget> targets = result.getTargets();
-        for(PhotonTrackedTarget t: targets) {
-            if(t.getFiducialId() == tagID) {
+
+        for (PhotonTrackedTarget t : targets) {
+            if (t.getFiducialId() == tagID) {
                 return averageCorners(t.getDetectedCorners());
             }
         }
@@ -95,9 +100,24 @@ public class CavbotsPhotonCamera {
 
     public int getNumTargets() {
         var result = getLatestResult();
-        if(!result.hasTargets()) {
+        if (!result.hasTargets()) {
             return 0;
         }
+
         return result.getTargets().size();
+    }
+
+    public void postAprilTagInfoToSmartDashboard() {
+        SmartDashboard.putNumber("Num Tags", getNumTargets());
+        var result = getLatestResult();
+        if (!result.hasTargets()) {
+            SmartDashboard.putNumberArray("Tag IDs", new double[] { -1 });
+            return;
+        }
+
+        List<PhotonTrackedTarget> targets = result.getTargets();
+
+        double[] tagIDs = targets.stream().mapToDouble(t -> t.getFiducialId()).toArray();
+        SmartDashboard.putNumberArray("Tag IDs", tagIDs);
     }
 }
