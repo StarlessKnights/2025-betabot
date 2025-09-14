@@ -108,10 +108,10 @@ public class CavbotsPhotonCamera {
     }
 
     public void postAprilTagInfoToSmartDashboard() {
-        SmartDashboard.putNumber("Num Tags", getNumTargets());
         var result = getLatestResult();
         if (!result.hasTargets()) {
             SmartDashboard.putNumberArray("Tag IDs", new double[] { -1 });
+            SmartDashboard.putNumber("Num Tags", 0);
             return;
         }
 
@@ -119,5 +119,6 @@ public class CavbotsPhotonCamera {
 
         double[] tagIDs = targets.stream().mapToDouble(t -> t.getFiducialId()).toArray();
         SmartDashboard.putNumberArray("Tag IDs", tagIDs);
+        SmartDashboard.putNumber("Num Tags", targets.size());
     }
 }
