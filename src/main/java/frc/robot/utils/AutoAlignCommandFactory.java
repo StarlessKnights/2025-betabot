@@ -38,7 +38,7 @@ import frc.robot.subsystems.AlgaeGrabberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-import frc.robot.utils.CavbotsPoseEstimator;
+import frc.robot.subsystems.DriveSubsystem;
 
 /** Add your docs here. */
 public class AutoAlignCommandFactory {
@@ -103,20 +103,20 @@ public class AutoAlignCommandFactory {
         if(!initialized) {
             initialized = true;
 
-            CavbotsPoseEstimator poseEstimator = new CavbotsPoseEstimator();
+            // CavbotsPoseEstimator poseEstimator = DriveSubsystem.getPoseEstimator();
 
-            // leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
-            // rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
-            Pose2d pose = poseEstimator.getPose().getPose2d();
+            leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
+            rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
+            // Pose2d pose = poseEstimator.getPose().getPose2d();
 
-            if (pose != null) {
-                leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(pose.getX(), pose.getY(), PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
-                rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(pose.getX(), pose.getY(), PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
-            } else {
-                leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
-                rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
+            // if (pose != null) {
+            //     leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(pose.getX(), pose.getY(), PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
+            //     rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(pose.getX(), pose.getY(), PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
+            // } else {
+            //     leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
+            //     rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
 
-            }
+            // }
             
 
             leftRedAllianceScoringPositions = mirrorBlueSidedPoseList(leftBlueAllianceScoringPositions);
@@ -214,7 +214,7 @@ public class AutoAlignCommandFactory {
         return new FollowPrecisePathCommand(driveSubsystem, goalPose);
     }
 
-    public static Command getAutoAlignDriveCommandL4(DriveSubsystem driveSubsystem, Pose2d currentPosition, boolean onRedAlliance, boolean onLeftSide) {
+    public static Command getAutoAlignDriveCommandL4(PoseTimestampPair pose, DriveSubsystem driveSubsystem, Pose2d currentPosition, boolean onRedAlliance, boolean onLeftSide) {
         initalize();
         Pose2d goalPose = getClosestL4Pose(currentPosition, onRedAlliance, onLeftSide);
 
@@ -372,14 +372,14 @@ public class AutoAlignCommandFactory {
 
     public static Command getL4AutoAlignCommand(Pose2d currentPosition, ElevatorSubsystem elevatorSubsystem, DriveSubsystem driveSubsystem, double elevatorEncoderPosition, boolean onRedAlliance, boolean onLeftSide, double grabberSpeed) {
         return new SequentialCommandGroup(
-            getAutoAlignDriveCommandL4(driveSubsystem, currentPosition, onRedAlliance, onLeftSide),
+            getAutoAlignDriveCommandL4(driveSubsystem.getPoseEstimator().getPose(), driveSubsystem, driveSubsystem.getPoseEstimator().getPose2d(), onRedAlliance, onLeftSide),
             new ExtendToHeightThenScoreCommand(elevatorSubsystem, elevatorEncoderPosition, grabberSpeed)
         ).onlyIf(() -> isPoseSafeToDriveTo(currentPosition, getClosestPose(currentPosition, onRedAlliance, onLeftSide)));
     }
 
     public static Command getL4AutoAlignCommandParallel(Pose2d currentPosition, ElevatorSubsystem elevatorSubsystem, DriveSubsystem driveSubsystem, double elevatorEncoderPosition, boolean onRedAlliance, boolean onLeftSide, double grabberSpeed) {
         return new ParallelCommandGroup(
-            getAutoAlignDriveCommandL4(driveSubsystem, currentPosition, onRedAlliance, onLeftSide),
+            getAutoAlignDriveCommandL4(driveSubsystem.getPoseEstimator().getPose(), driveSubsystem, driveSubsystem.getPoseEstimator().getPose2d(), onRedAlliance, onLeftSide),
             new ExtendToHeightThenScoreCommand(elevatorSubsystem, elevatorEncoderPosition, grabberSpeed)
         ).onlyIf(() -> isPoseSafeToDriveTo(currentPosition, getClosestPose(currentPosition, onRedAlliance, onLeftSide)));
     }

@@ -130,7 +130,7 @@ public class RobotContainer {
 
     Command autoL2 = new AutoScoreCommand(driveSubsystem, elevatorSubsystem, ElevatorSubsystemConstants.L2_ENCODER_POSITION, scoringOnLeftBooleanSupplier);
     Command autoL3 = new AutoScoreCommand(driveSubsystem, elevatorSubsystem, ElevatorSubsystemConstants.L3_ENCODER_POSITION, scoringOnLeftBooleanSupplier);
-    Command autoL4 = new AutoScoreL4Command(driveSubsystem, elevatorSubsystem, ElevatorSubsystemConstants.L4_ENCODER_POSITION, scoringOnLeftBooleanSupplier, ElevatorSubsystemConstants.L4_GRABBER_SPEED);
+    Command autoL4 = new AutoScoreL4Command(driveSubsystem.getPoseEstimator().getPose(), driveSubsystem, elevatorSubsystem, ElevatorSubsystemConstants.L4_ENCODER_POSITION, scoringOnLeftBooleanSupplier, ElevatorSubsystemConstants.L4_GRABBER_SPEED);
 
     ParallelCommandGroup l2CommandManual = new ParallelCommandGroup(
       new ElevatorGoToPositionCommand(elevatorSubsystem, runElevatorExtruder, ElevatorSubsystemConstants.L2_ENCODER_POSITION),

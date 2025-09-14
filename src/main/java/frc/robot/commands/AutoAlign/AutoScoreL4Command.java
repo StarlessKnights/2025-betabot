@@ -12,16 +12,20 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.utils.AutoAlignCommandFactory;
 import frc.robot.utils.PathLoader;
+import frc.robot.utils.PoseTimestampPair;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoScoreL4Command extends Command {
+  PoseTimestampPair pose;
   DriveSubsystem driveSubsystem;
   ElevatorSubsystem elevatorSubsystem;
   BooleanSupplier onLeftSide;
   double scoringPosition;
   double grabberSpeed = ElevatorSubsystemConstants.GRABBER_SPEED;
 
-  public AutoScoreL4Command(DriveSubsystem driveSubsystem, ElevatorSubsystem elevatorSubsystem, double scoringPosition, BooleanSupplier onLeftSide) {
+  public AutoScoreL4Command(PoseTimestampPair pose, DriveSubsystem driveSubsystem, ElevatorSubsystem elevatorSubsystem, double scoringPosition, BooleanSupplier onLeftSide) {
+    this.pose = pose;
     this.driveSubsystem = driveSubsystem;
     this.elevatorSubsystem = elevatorSubsystem;
     this.scoringPosition = scoringPosition;
@@ -29,7 +33,8 @@ public class AutoScoreL4Command extends Command {
     addRequirements(driveSubsystem, elevatorSubsystem);
   }
 
-  public AutoScoreL4Command(DriveSubsystem driveSubsystem, ElevatorSubsystem elevatorSubsystem, double scoringPosition, BooleanSupplier onLeftSide, double grabberSpeed) {
+  public AutoScoreL4Command(PoseTimestampPair pose, DriveSubsystem driveSubsystem, ElevatorSubsystem elevatorSubsystem, double scoringPosition, BooleanSupplier onLeftSide, double grabberSpeed) {
+    this.pose = pose;
     this.driveSubsystem = driveSubsystem;
     this.elevatorSubsystem = elevatorSubsystem;
     this.scoringPosition = scoringPosition;
