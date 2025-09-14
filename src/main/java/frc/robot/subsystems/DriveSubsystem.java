@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 import frc.robot.Constants.DriveSubsystemConstants;
 import frc.robot.utils.CavbotsPoseEstimator;
 import frc.robot.utils.NeoKrakenModule;
@@ -117,5 +119,6 @@ public class DriveSubsystem extends SubsystemBase {
     field.setRobotPose(poseEstimator.getPose2d());
 
     SmartDashboard.putData("field", field);
+    SmartDashboard.putNumber("Time Left", DriverStation.getMatchTime());
   }
 }
