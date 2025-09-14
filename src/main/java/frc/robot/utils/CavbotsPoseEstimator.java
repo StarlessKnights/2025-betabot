@@ -24,8 +24,20 @@ public class CavbotsPoseEstimator {
                 driveSubsystem.getModulePositions(), initialPose2d);
     }
 
+    public CavbotsPoseEstimator() {}
+
     public Pose2d getPose2d() {
         return estimator.getEstimatedPosition();
+    }
+
+    public PoseTimestampPair getPose() {
+        for (CavbotsPhotonCamera c : localizationCameras) {
+            PoseTimestampPair pose = c.fetchPose();
+            if (pose != null) {
+                return pose;
+            }
+        }
+        return null;
     }
 
     private void tryVisionUpdateWithCamera(CavbotsPhotonCamera c) {

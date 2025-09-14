@@ -34,7 +34,7 @@ public class CavbotsPhotonCamera {
         } catch (IOException e) {
             System.out.println("ERROR: UNABLE TO LOAD EDITED JSON, DEFAULTING TO BUILT-IN JSON FILE");
             System.out.println(e.getMessage());
-            fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+            fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
         }
 
         camera = new PhotonCamera(camName);

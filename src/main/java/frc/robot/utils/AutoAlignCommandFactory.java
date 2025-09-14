@@ -38,6 +38,8 @@ import frc.robot.subsystems.AlgaeGrabberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
+import frc.robot.utils.CavbotsPoseEstimator;
+
 /** Add your docs here. */
 public class AutoAlignCommandFactory {
     static List<Pose2d> leftBlueAllianceScoringPositions = new ArrayList<>();
@@ -100,8 +102,22 @@ public class AutoAlignCommandFactory {
     public static void initalize() {
         if(!initialized) {
             initialized = true;
-            leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
-            rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
+
+            CavbotsPoseEstimator poseEstimator = new CavbotsPoseEstimator();
+
+            // leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
+            // rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
+            Pose2d pose = poseEstimator.getPose().getPose2d();
+
+            if (pose != null) {
+                leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(pose.getX(), pose.getY(), PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
+                rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(pose.getX(), pose.getY(), PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
+            } else {
+                leftBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.LEFT_BLUE_SIDED_SCORING_POSITIONS);
+                rightBlueAllianceScoringPositions = applyXYOffsetsToPoseList(PathingConstants.X_OFFSET, PathingConstants.Y_OFFSET, PathingConstants.RIGHT_BLUE_SIDED_SCORING_POSITIONS);
+
+            }
+            
 
             leftRedAllianceScoringPositions = mirrorBlueSidedPoseList(leftBlueAllianceScoringPositions);
             rightRedAllianceScoringPositions = mirrorBlueSidedPoseList(rightBlueAllianceScoringPositions);
